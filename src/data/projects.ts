@@ -107,7 +107,7 @@ export const projects: Project[] = [
         status: 'development',
         featured: false,
 
-        github: 'https://github.com/ThaisRomero/interactive-portfolio',
+        github: 'https://github.com/ThaisRomero/interactive-portifolio',
 
         features: [
             'Terminal interativo funcional',
