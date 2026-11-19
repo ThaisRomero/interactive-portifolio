@@ -11,35 +11,90 @@ const commands: Record<string, string> = {
     help: [
         'Comandos disponíveis:',
         '',
+        'home      - Página inicial',
         'about     - Sobre mim',
         'skills    - Minhas tecnologias',
         'projects  - Meus projetos',
         'contact   - Contato',
+        'github    - Perfil no GitHub',
+        'linkedin  - Perfil no LinkedIn',
         'whoami    - Identificação',
-        'date      - Data atual',
-        'clear     - Limpar terminal'
+        'date      - Data e hora atual',
+        'clear     - Limpar terminal',
+        '',
+        'Atalhos:',
+        'Tab       - Autocompletar',
+        '↑ / ↓     - Histórico de comandos',
+        'Ctrl + L  - Limpar terminal'
     ].join('\n'),
 
-    about: 'Experiência em redes e infraestrutura, desenvolvimento de software e automação.',
+    home: 'Retornando à página inicial...',
 
-   skills: [
-    'Front-end: React, JavaScript, TypeScript, HTML, CSS',
-    'Back-end: Python, PHP',
-    'Em estudo: Java, Laravel, MySQL',
-    'Ferramentas: Git, Linux'
-].join('\n'),
+    about: [
+        'Experiência em redes e infraestrutura,',
+        'desenvolvimento de software e automação.',
+        '',
+        'Navegando para Sobre mim...'
+    ].join('\n'),
+
+    skills: [
+        'Front-end: React, JavaScript, TypeScript, HTML, CSS',
+        'Back-end: Python, PHP',
+        'Em estudo: Java, Laravel, MySQL',
+        'Ferramentas: Git, Linux',
+        '',
+        'Navegando para Habilidades...'
+    ].join('\n'),
 
     projects: [
-    '01. PONLab - Gestão e Monitoramento de Capacidade PON',
-    '02. Restaurante Encanto Gastronomia (em finalização)',
-    '03. Portfólio Interativo'
-].join('\n'),
+        '01. PONLab - Gestão e Monitoramento de Capacidade PON',
+        '02. Restaurante Encanto Gastronomia (em finalização)',
+        '03. Portfólio Interativo',
+        '',
+        'Navegando para Projetos...'
+    ].join('\n'),
 
-    contact: 'LinkedIn: linkedin.com/in/thais-romero',
+    contact: [
+        'LinkedIn: linkedin.com/in/thais-romero',
+        'GitHub: github.com/ThaisRomero',
+        '',
+        'Navegando para Contato...'
+    ].join('\n'),
+
+    github: 'Abrindo GitHub...',
+
+    linkedin: 'Abrindo LinkedIn...',
 
     whoami: 'thais-romero | Developer',
 
     sudo: 'Access denied. Nice try! :)'
+}
+
+const availableCommands = [
+    'help',
+    'home',
+    'about',
+    'skills',
+    'projects',
+    'contact',
+    'github',
+    'linkedin',
+    'whoami',
+    'date',
+    'clear'
+]
+
+const navigationCommands: Record<string, string> = {
+    home: 'home',
+    about: 'about',
+    skills: 'skills',
+    projects: 'projects',
+    contact: 'contact'
+}
+
+const externalLinks: Record<string, string> = {
+    github: 'https://github.com/ThaisRomero',
+    linkedin: 'https://www.linkedin.com/in/thais-romero/'
 }
 
 export default function InteractiveTerminal() {
@@ -55,10 +110,14 @@ export default function InteractiveTerminal() {
 
     const [commandHistory, setCommandHistory] = useState<string[]>([])
     const [historyIndex, setHistoryIndex] = useState(-1)
+    const [suggestions, setSuggestions] = useState<string[]>([])
 
     const outputRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLInputElement>(null)
 
+    const navigationTimer = useRef<number | null>(null)
+
+    // Rolagem automática do terminal
     useEffect(() => {
 
         if (outputRef.current) {
@@ -67,6 +126,39 @@ export default function InteractiveTerminal() {
         }
 
     }, [history])
+
+    // Cancelar navegação pendente ao desmontar o componente
+    useEffect(() => {
+
+        return () => {
+
+            if (navigationTimer.current !== null) {
+                window.clearTimeout(navigationTimer.current)
+            }
+
+        }
+
+    }, [])
+
+    function navigateToSection(sectionId: string) {
+
+        const section = document.getElementById(sectionId)
+
+        if (!section) return
+
+        navigationTimer.current = window.setTimeout(() => {
+
+            inputRef.current?.blur()
+
+            section.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            })
+
+            navigationTimer.current = null
+
+        }, 800)
+    }
 
     function executeCommand(event: FormEvent<HTMLFormElement>) {
 
@@ -78,6 +170,14 @@ export default function InteractiveTerminal() {
 
         setCommandHistory(previous => [...previous, command])
         setHistoryIndex(-1)
+        setSuggestions([])
+
+        if (navigationTimer.current !== null) {
+
+            window.clearTimeout(navigationTimer.current)
+            navigationTimer.current = null
+
+        }
 
         if (command === 'clear') {
 
@@ -103,13 +203,63 @@ export default function InteractiveTerminal() {
                 ...previous,
                 { command, output }
             ])
+
+            // Navegação interna
+            if (Object.hasOwn(navigationCommands, command)) {
+
+                navigateToSection(navigationCommands[command])
+
+            }
+
+            // Links externos
+            if (Object.hasOwn(externalLinks, command)) {
+
+                window.open(
+                    externalLinks[command],
+                    '_blank',
+                    'noopener,noreferrer'
+                )
+
+            }
+
         }
 
         setInput('')
+
     }
 
     function handleKeyboard(event: KeyboardEvent<HTMLInputElement>) {
 
+        // Autocompletar comandos
+        if (event.key === 'Tab') {
+
+            const currentInput = input.trim().toLowerCase()
+
+            if (!currentInput) return
+
+            const matches = availableCommands.filter(command =>
+                command.startsWith(currentInput)
+            )
+
+            if (!matches.length) return
+
+            event.preventDefault()
+
+            if (matches.length === 1) {
+
+                setInput(matches[0])
+                setSuggestions([])
+
+            } else {
+
+                setSuggestions(matches)
+
+            }
+
+            return
+        }
+
+        // Histórico: comando anterior
         if (event.key === 'ArrowUp') {
 
             event.preventDefault()
@@ -122,9 +272,11 @@ export default function InteractiveTerminal() {
 
             setHistoryIndex(nextIndex)
             setInput(commandHistory[nextIndex])
+            setSuggestions([])
 
         }
 
+        // Histórico: próximo comando
         if (event.key === 'ArrowDown') {
 
             event.preventDefault()
@@ -144,14 +296,27 @@ export default function InteractiveTerminal() {
                 setInput(commandHistory[nextIndex])
 
             }
+
+            setSuggestions([])
         }
 
+        // Limpar terminal
         if (event.ctrlKey && event.key.toLowerCase() === 'l') {
 
             event.preventDefault()
+
             setHistory([])
+            setSuggestions([])
 
         }
+
+        // Fechar sugestões
+        if (event.key === 'Escape') {
+
+            setSuggestions([])
+
+        }
+
     }
 
     return (
@@ -217,6 +382,44 @@ export default function InteractiveTerminal() {
 
                 </div>
 
+                {/* Sugestões de comandos */}
+                {suggestions.length > 0 && (
+
+                    <div className="border-t border-white/10 bg-background/40 px-5 py-3">
+
+                        <p className="text-xs font-mono text-foreground/40 mb-3">
+                            Comandos encontrados:
+                        </p>
+
+                        <div className="flex flex-wrap gap-2">
+
+                            {suggestions.map(suggestion => (
+
+                                <button
+                                    key={suggestion}
+                                    type="button"
+                                    onClick={() => {
+
+                                        setInput(suggestion)
+                                        setSuggestions([])
+                                        inputRef.current?.focus()
+
+                                    }}
+                                    className="px-3 py-1 rounded-md border border-primary/30 bg-primary/10 text-secondary text-xs font-mono hover:bg-primary/20 cursor-pointer transition-colors"
+                                >
+
+                                    {suggestion}
+
+                                </button>
+
+                            ))}
+
+                        </div>
+
+                    </div>
+
+                )}
+
                 {/* Entrada de comandos */}
                 <form
                     onSubmit={executeCommand}
@@ -233,7 +436,12 @@ export default function InteractiveTerminal() {
                         type="text"
                         aria-label="Comando do terminal"
                         value={input}
-                        onChange={event => setInput(event.target.value)}
+                        onChange={event => {
+
+                            setInput(event.target.value)
+                            setSuggestions([])
+
+                        }}
                         onKeyDown={handleKeyboard}
                         autoComplete="off"
                         spellCheck={false}
@@ -245,5 +453,6 @@ export default function InteractiveTerminal() {
             </div>
 
         </div>
+
     )
 }

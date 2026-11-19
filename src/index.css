@@ -6,8 +6,35 @@
     --color-primary: #8B5CF6;
     --color-secondary: #22D3EE;
     --color-foreground: #F1F5F9;
+    --color-border: #FFFFFF;
 }
 
+/* Tema escuro */
+:root,
+:root[data-theme="dark"] {
+    --color-background: #090B14;
+    --color-surface: #15192B;
+    --color-primary: #8B5CF6;
+    --color-secondary: #22D3EE;
+    --color-foreground: #F1F5F9;
+    --color-border: #FFFFFF;
+
+    color-scheme: dark;
+}
+
+/* Tema claro */
+:root[data-theme="light"] {
+    --color-background: #CCD5E2;
+    --color-surface: #E2E8F0;
+    --color-primary: #6D28D9;
+    --color-secondary: #0E7490;
+    --color-foreground: #1E293B;
+    --color-border: #475569;
+
+    color-scheme: light;
+}
+
+/* Configurações globais */
 :root {
     font-family: 'Inter', sans-serif;
     color: var(--color-foreground);
@@ -28,7 +55,62 @@ html {
     box-sizing: border-box;
 }
 
+/* Transição entre temas */
+body,
+section,
+header,
+footer,
+article,
+div,
+button,
+a {
+    transition-property: background-color, border-color, color;
+    transition-duration: 300ms;
+}
+
+/* Seleção de texto */
 ::selection {
-    background-color: #8B5CF6;
-    color: white;
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+}
+
+/* Barra de rolagem */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--color-primary);
+    border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-secondary);
+}
+
+/* Refinamentos do tema claro */
+:root[data-theme="light"] {
+    --color-foreground: #0F172A;
+    --color-surface: #E8EDF4;
+}
+
+:root[data-theme="light"] header {
+    background-color: rgba(226, 232, 240, 0.85);
+}
+
+:root[data-theme="light"] .border-white\/10 {
+    border-color: rgba(71, 85, 105, 0.18);
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #94A3B8;
+}
+
+:root[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+    background: #64748B;
 }

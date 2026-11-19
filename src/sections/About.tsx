@@ -1,4 +1,7 @@
+
 import { motion } from 'framer-motion'
+import { useTheme } from '../hooks/useTheme'
+
 import {
     Network,
     Code2,
@@ -53,11 +56,15 @@ const timeline = [
 
 export default function About() {
 
+    const { theme } = useTheme()
+
+    const isLight = theme === 'light'
+
     return (
 
         <section
             id="about"
-            className="relative py-28 scroll-mt-20"
+            className="relative py-16 sm:py-20 lg:py-28 scroll-mt-20"
         >
 
             <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -68,14 +75,14 @@ export default function About() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
+                    className="text-center mb-8 sm:mb-12 lg:mb-16"
                 >
 
                     <span className="text-secondary font-mono text-sm tracking-widest">
                         01 — ABOUT ME
                     </span>
 
-                    <h2 className="text-4xl md:text-5xl font-bold mt-4">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-4">
                         Sobre mim
                     </h2>
 
@@ -84,7 +91,7 @@ export default function About() {
                 </motion.div>
 
                 {/* Apresentação e áreas de conhecimento */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-center">
 
                     {/* Apresentação profissional */}
                     <motion.div
@@ -92,9 +99,10 @@ export default function About() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.7 }}
+                        className="min-w-0"
                     >
 
-                        <h3 className="text-3xl md:text-4xl font-bold leading-tight mb-6">
+                        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-5 sm:mb-6">
 
                             Tecnologia além do{' '}
 
@@ -104,7 +112,11 @@ export default function About() {
 
                         </h3>
 
-                        <div className="space-y-5 text-foreground/65 text-base md:text-lg leading-relaxed">
+                        <div className={`space-y-4 sm:space-y-5 text-base md:text-lg leading-relaxed ${
+                            isLight
+                                ? 'text-foreground/80'
+                                : 'text-foreground/65'
+                        }`}>
 
                             <p>
                                 Sou profissional de tecnologia, formada em
@@ -134,7 +146,7 @@ export default function About() {
                     </motion.div>
 
                     {/* Cards de conhecimento */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
 
                         {areas.map(({ icon: Icon, title, description }, index) => (
 
@@ -148,20 +160,37 @@ export default function About() {
                                     duration: 0.5,
                                     delay: index * 0.1
                                 }}
-                                className="group rounded-xl border border-white/10 bg-surface/60 backdrop-blur-md p-6 hover:border-secondary/40 transition-colors"
+                                className={`group rounded-xl border backdrop-blur-md p-5 sm:p-6 transition-colors hover:border-secondary/40 ${
+                                    isLight
+                                        ? 'border-border/20 bg-surface/95 shadow-[0_4px_16px_rgba(15,23,42,0.07)]'
+                                        : 'border-white/10 bg-surface/60'
+                                }`}
                             >
 
-                                <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-secondary/10 text-secondary mb-5 group-hover:bg-primary/15 group-hover:text-primary transition-colors">
+                                {/* Ícone e título */}
+                                <div className="flex flex-row sm:flex-col items-center sm:items-start gap-3 sm:gap-0 mb-3 sm:mb-2">
 
-                                    <Icon size={25} />
+                                    <div className={`w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-lg flex items-center justify-center text-secondary sm:mb-5 group-hover:bg-primary/15 group-hover:text-primary transition-colors ${
+                                        isLight
+                                            ? 'bg-secondary/15'
+                                            : 'bg-secondary/10'
+                                    }`}>
+
+                                        <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
+
+                                    </div>
+
+                                    <h4 className="font-semibold text-base sm:text-lg">
+                                        {title}
+                                    </h4>
 
                                 </div>
 
-                                <h4 className="font-semibold text-lg mb-2">
-                                    {title}
-                                </h4>
-
-                                <p className="text-sm text-foreground/55 leading-relaxed">
+                                <p className={`text-sm leading-relaxed ${
+                                    isLight
+                                        ? 'text-foreground/75'
+                                        : 'text-foreground/55'
+                                }`}>
                                     {description}
                                 </p>
 
@@ -179,14 +208,14 @@ export default function About() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.7 }}
-                    className="mt-24 max-w-3xl mx-auto"
+                    className="mt-12 sm:mt-16 lg:mt-24 max-w-3xl mx-auto"
                 >
 
-                    <h3 className="text-2xl md:text-3xl font-bold text-center mb-12">
+                    <h3 className="text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-12">
                         Minha trajetória
                     </h3>
 
-                    <div className="relative border-l border-primary/40 ml-5 pl-9 space-y-8">
+                    <div className="relative border-l border-primary/40 ml-2 sm:ml-5 pl-6 sm:pl-9 space-y-5 sm:space-y-8">
 
                         {timeline.map(({ year, title, description, icon: Icon }, index) => (
 
@@ -199,11 +228,19 @@ export default function About() {
                                     duration: 0.5,
                                     delay: index * 0.15
                                 }}
-                                className="relative rounded-xl border border-white/10 bg-surface/50 backdrop-blur-md p-6 hover:border-primary/40 transition-colors"
+                                className={`relative rounded-xl border backdrop-blur-md p-5 sm:p-6 hover:border-primary/40 transition-colors ${
+                                    isLight
+                                        ? 'border-border/20 bg-surface/95 shadow-[0_4px_16px_rgba(15,23,42,0.07)]'
+                                        : 'border-white/10 bg-surface/50'
+                                }`}
                             >
 
                                 {/* Marcador da linha do tempo */}
-                                <div className="absolute -left-11.75 top-7 w-5 h-5 rounded-full border-4 border-background bg-secondary shadow-[0_0_15px_#22D3EE]" />
+                                <div className={`absolute -left-8.5 sm:-left-11.75 top-6 sm:top-7 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-3 sm:border-4 border-background bg-secondary ${
+                                    isLight
+                                        ? 'shadow-[0_0_10px_rgba(14,116,144,0.35)]'
+                                        : 'shadow-[0_0_15px_#22D3EE]'
+                                }`} />
 
                                 <div className="flex items-center gap-3 mb-3">
 
@@ -218,11 +255,15 @@ export default function About() {
 
                                 </div>
 
-                                <h4 className="text-xl font-semibold mb-2">
+                                <h4 className="text-lg sm:text-xl font-semibold mb-2 leading-snug">
                                     {title}
                                 </h4>
 
-                                <p className="text-foreground/60 leading-relaxed">
+                                <p className={`text-sm sm:text-base leading-relaxed ${
+                                    isLight
+                                        ? 'text-foreground/75'
+                                        : 'text-foreground/60'
+                                }`}>
                                     {description}
                                 </p>
 

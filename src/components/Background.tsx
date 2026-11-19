@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTheme } from '../hooks/useTheme'
 
 interface Particle {
     x: number
@@ -12,6 +13,10 @@ interface Particle {
 export default function Background() {
 
     const canvasRef = useRef<HTMLCanvasElement>(null)
+
+    const { theme } = useTheme()
+
+    const isLight = theme === 'light'
 
     useEffect(() => {
 
@@ -34,10 +39,30 @@ export default function Background() {
             y: -1000
         }
 
-        const colors = [
-            '#22D3EE',
-            '#8B5CF6'
-        ]
+        // Configurações específicas de cada tema
+        const configuration = isLight
+            ? {
+                colors: ['#0E7490', '#6D28D9'],
+                lineColor: '109, 40, 217',
+                mouseColor: '14, 116, 144',
+                lineOpacity: 0.4,
+                mouseOpacity: 0.5,
+                connectionDistance: 150,
+                mouseDistance: 180,
+                particleRadius: 0.8,
+                lineWidth: 0.8
+            }
+            : {
+                colors: ['#22D3EE', '#8B5CF6'],
+                lineColor: '139, 92, 246',
+                mouseColor: '34, 211, 238',
+                lineOpacity: 0.25,
+                mouseOpacity: 0.4,
+                connectionDistance: 125,
+                mouseDistance: 160,
+                particleRadius: 0.5,
+                lineWidth: 0.6
+            }
 
         const reducedMotion = window.matchMedia(
             '(prefers-reduced-motion: reduce)'
@@ -50,7 +75,10 @@ export default function Background() {
             width = window.innerWidth
             height = window.innerHeight
 
-            const dpr = Math.min(window.devicePixelRatio || 1, 2)
+            const dpr = Math.min(
+                window.devicePixelRatio || 1,
+                2
+            )
 
             canvas.width = width * dpr
             canvas.height = height * dpr
@@ -70,12 +98,23 @@ export default function Background() {
             )
 
             particles = Array.from({ length: count }, () => ({
+
                 x: Math.random() * width,
                 y: Math.random() * height,
+
                 vx: (Math.random() - 0.5) * 0.35,
                 vy: (Math.random() - 0.5) * 0.35,
-                radius: Math.random() * 1.5 + 0.5,
-                color: colors[Math.floor(Math.random() * colors.length)]
+
+                radius:
+                    Math.random() * 1.5 +
+                    configuration.particleRadius,
+
+                color: configuration.colors[
+                    Math.floor(
+                        Math.random() * configuration.colors.length
+                    )
+                ]
+
             }))
         }
 
@@ -88,8 +127,10 @@ export default function Background() {
             particles.forEach((particle, index) => {
 
                 if (!reducedMotion) {
+
                     particle.x += particle.vx
                     particle.y += particle.vy
+
                 }
 
                 if (particle.x < 0 || particle.x > width) {
@@ -100,6 +141,7 @@ export default function Background() {
                     particle.vy *= -1
                 }
 
+                // Desenhar partículas
                 ctx.beginPath()
 
                 ctx.arc(
@@ -113,6 +155,7 @@ export default function Background() {
                 ctx.fillStyle = particle.color
                 ctx.fill()
 
+                // Conexões entre partículas
                 for (let i = index + 1; i < particles.length; i++) {
 
                     const other = particles[i]
@@ -122,7 +165,11 @@ export default function Background() {
                         particle.y - other.y
                     )
 
-                    if (distance < 125) {
+                    if (distance < configuration.connectionDistance) {
+
+                        const opacity =
+                            configuration.lineOpacity *
+                            (1 - distance / configuration.connectionDistance)
 
                         ctx.beginPath()
 
@@ -130,19 +177,29 @@ export default function Background() {
                         ctx.lineTo(other.x, other.y)
 
                         ctx.strokeStyle =
-                            `rgba(139, 92, 246, ${0.25 * (1 - distance / 125)})`
+                            `rgba(${configuration.lineColor}, ${opacity})`
 
-                        ctx.lineWidth = 0.6
+                        ctx.lineWidth = configuration.lineWidth
+
                         ctx.stroke()
+
                     }
                 }
 
+                // Interação com o mouse
                 const mouseDistance = Math.hypot(
                     particle.x - mouse.x,
                     particle.y - mouse.y
                 )
 
-                if (!reducedMotion && mouseDistance < 160) {
+                if (
+                    !reducedMotion &&
+                    mouseDistance < configuration.mouseDistance
+                ) {
+
+                    const opacity =
+                        configuration.mouseOpacity *
+                        (1 - mouseDistance / configuration.mouseDistance)
 
                     ctx.beginPath()
 
@@ -150,9 +207,12 @@ export default function Background() {
                     ctx.lineTo(mouse.x, mouse.y)
 
                     ctx.strokeStyle =
-                        `rgba(34, 211, 238, ${0.4 * (1 - mouseDistance / 160)})`
+                        `rgba(${configuration.mouseColor}, ${opacity})`
+
+                    ctx.lineWidth = configuration.lineWidth
 
                     ctx.stroke()
+
                 }
             })
         }
@@ -162,18 +222,21 @@ export default function Background() {
             draw()
 
             animationId = requestAnimationFrame(animate)
+
         }
 
         function handleMouseMove(event: MouseEvent) {
 
             mouse.x = event.clientX
             mouse.y = event.clientY
+
         }
 
         function handleMouseLeave() {
 
             mouse.x = -1000
             mouse.y = -1000
+
         }
 
         window.addEventListener('resize', resize)
@@ -190,10 +253,15 @@ export default function Background() {
 
             window.removeEventListener('resize', resize)
             window.removeEventListener('mousemove', handleMouseMove)
-            document.removeEventListener('mouseleave', handleMouseLeave)
+
+            document.removeEventListener(
+                'mouseleave',
+                handleMouseLeave
+            )
+
         }
 
-    }, [])
+    }, [isLight])
 
     return (
 
@@ -202,13 +270,32 @@ export default function Background() {
             className="fixed inset-0 z-0 pointer-events-none overflow-hidden"
         >
 
-            <div className="absolute -top-40 -left-40 w-125 h-125 rounded-full bg-secondary/10 blur-[150px]" />
+            {/* Iluminação azul */}
+            <div
+                className={`absolute -top-40 -left-40 w-125 h-125 rounded-full blur-[150px] ${
+                    isLight
+                        ? 'bg-secondary/8'
+                        : 'bg-secondary/10'
+                }`}
+            />
 
-            <div className="absolute -bottom-40 -right-40 w-150 h-150 rounded-full bg-primary/15 blur-[150px]" />
+            {/* Iluminação violeta */}
+            <div
+                className={`absolute -bottom-40 -right-40 w-150 h-150 rounded-full blur-[150px] ${
+                    isLight
+                        ? 'bg-primary/8'
+                        : 'bg-primary/15'
+                }`}
+            />
 
+            {/* Canvas de partículas */}
             <canvas
                 ref={canvasRef}
-                className="absolute inset-0 w-full h-full opacity-60"
+                className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${
+                    isLight
+                        ? 'opacity-75'
+                        : 'opacity-60'
+                }`}
             />
 
         </div>

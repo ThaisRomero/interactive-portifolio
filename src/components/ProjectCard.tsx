@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 
@@ -11,6 +12,8 @@ import {
 
 import { FaGithub } from 'react-icons/fa'
 
+import { useTheme } from '../hooks/useTheme'
+
 import type { Project } from '../data/projects'
 
 interface ProjectCardProps {
@@ -23,19 +26,28 @@ const statusConfig = {
         label: 'Concluído',
         color: 'text-emerald-400',
         background: 'bg-emerald-400/10',
-        dot: 'bg-emerald-400'
+        dot: 'bg-emerald-400',
+        lightColor: 'text-emerald-700',
+        lightBackground: 'bg-emerald-500/10',
+        lightDot: 'bg-emerald-600'
     },
     finishing: {
         label: 'Em finalização',
         color: 'text-yellow-400',
         background: 'bg-yellow-400/10',
-        dot: 'bg-yellow-400'
+        dot: 'bg-yellow-400',
+        lightColor: 'text-amber-700',
+        lightBackground: 'bg-amber-500/15',
+        lightDot: 'bg-amber-500'
     },
     development: {
         label: 'Em desenvolvimento',
         color: 'text-secondary',
         background: 'bg-secondary/10',
-        dot: 'bg-secondary'
+        dot: 'bg-secondary',
+        lightColor: 'text-secondary',
+        lightBackground: 'bg-secondary/10',
+        lightDot: 'bg-secondary'
     }
 }
 
@@ -45,6 +57,10 @@ export default function ProjectCard({
 }: ProjectCardProps) {
 
     const [imageError, setImageError] = useState(false)
+
+    const { theme } = useTheme()
+
+    const isLight = theme === 'light'
 
     const status = statusConfig[project.status]
 
@@ -58,16 +74,21 @@ export default function ProjectCard({
             transition={{ duration: 0.5 }}
             className={`
                 group relative overflow-hidden rounded-2xl
-                border bg-surface/60 backdrop-blur-md
+                border backdrop-blur-md
                 transition-colors hover:border-secondary/50
+                ${isLight
+                    ? 'bg-surface/95 shadow-[0_8px_25px_rgba(15,23,42,0.08)]'
+                    : 'bg-surface/60'}
                 ${project.featured
                     ? 'border-primary/40 lg:col-span-2 lg:grid lg:grid-cols-2'
-                    : 'border-white/10 flex flex-col'}
+                    : isLight
+                        ? 'border-border/20 flex flex-col'
+                        : 'border-white/10 flex flex-col'}
             `}
         >
 
             {/* Imagem do projeto */}
-            <div className="relative overflow-hidden min-h-64 bg-background">
+            <div className="relative overflow-hidden min-h-48 sm:min-h-56 lg:min-h-64 bg-[#090B14]">
 
                 {!imageError ? (
 
@@ -86,27 +107,31 @@ export default function ProjectCard({
                         <FolderCode
                             size={64}
                             strokeWidth={1}
-                            className="text-secondary/50"
+                            className="text-cyan-400/50"
                         />
 
-                        <span className="font-mono text-sm text-foreground/60">
+                        <span className="font-mono text-sm text-slate-300">
                             {project.title}
                         </span>
 
                         <ImageOff
                             size={18}
-                            className="text-foreground/30"
+                            className="text-slate-500"
                         />
 
                     </div>
 
                 )}
 
-                <div className="absolute inset-0 bg-linear-to-t from-background/60 to-transparent pointer-events-none" />
+                {!isLight && (
+
+                    <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent pointer-events-none" />
+
+                )}
 
                 {project.featured && (
 
-                    <div className="absolute top-4 left-4 flex items-center gap-2 rounded-full bg-background/80 border border-primary/40 px-4 py-2 text-xs text-primary backdrop-blur-md">
+                    <div className="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-2 rounded-full bg-[#090B14]/80 border border-violet-500/40 px-3 sm:px-4 py-1.5 sm:py-2 text-xs text-violet-400 backdrop-blur-md">
 
                         <Star size={14} />
 
@@ -119,17 +144,20 @@ export default function ProjectCard({
             </div>
 
             {/* Informações */}
-            <div className="flex flex-col flex-1 p-6 sm:p-8">
+            <div className="flex flex-col flex-1 p-5 sm:p-6 lg:p-8">
 
                 {/* Status */}
                 <div className={`
                     self-start inline-flex items-center gap-2
-                    rounded-full px-3 py-1.5 text-xs mb-5
-                    ${status.background} ${status.color}
+                    rounded-full px-3 py-1.5 text-xs mb-4 sm:mb-5
+                    ${isLight
+                        ? `${status.lightBackground} ${status.lightColor}`
+                        : `${status.background} ${status.color}`}
                 `}>
 
                     <span className={`
-                        w-2 h-2 rounded-full ${status.dot}
+                        w-2 h-2 rounded-full
+                        ${isLight ? status.lightDot : status.dot}
                     `} />
 
                     {status.label}
@@ -137,32 +165,36 @@ export default function ProjectCard({
                 </div>
 
                 {/* Título */}
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-secondary transition-colors">
+                <h3 className="text-xl sm:text-2xl font-bold mb-2 group-hover:text-secondary transition-colors">
 
                     {project.title}
 
                 </h3>
 
-                <p className="text-primary text-sm mb-4">
+                <p className="text-primary text-sm mb-3 sm:mb-4">
 
                     {project.subtitle}
 
                 </p>
 
-                <p className="text-foreground/60 leading-relaxed mb-6">
+                <p className={`text-sm sm:text-base leading-relaxed mb-5 sm:mb-6 ${
+                    isLight
+                        ? 'text-foreground/80'
+                        : 'text-foreground/60'
+                }`}>
 
                     {project.description}
 
                 </p>
 
                 {/* Tecnologias */}
-                <div className="flex flex-wrap gap-2 mb-8">
+                <div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
 
                     {project.technologies.map(technology => (
 
                         <span
                             key={technology}
-                            className="rounded-md border border-primary/20 bg-primary/10 text-primary text-xs px-3 py-1.5"
+                            className="rounded-md border border-primary/20 bg-primary/10 text-primary text-xs px-2.5 sm:px-3 py-1.5"
                         >
 
                             {technology}
@@ -174,9 +206,10 @@ export default function ProjectCard({
                 </div>
 
                 {/* Ações */}
-                <div className="flex flex-wrap items-center gap-5 mt-auto">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-5 mt-auto">
 
                     <button
+                        type="button"
                         onClick={() => onDetails(project)}
                         className="flex items-center gap-2 text-secondary text-sm font-medium cursor-pointer hover:text-foreground transition-colors"
                     >
@@ -193,7 +226,11 @@ export default function ProjectCard({
                             href={project.github}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-foreground/70 hover:text-secondary transition-colors"
+                            className={`flex items-center gap-2 text-sm hover:text-secondary transition-colors ${
+                                isLight
+                                    ? 'text-foreground/85'
+                                    : 'text-foreground/70'
+                            }`}
                         >
 
                             <FaGithub size={19} />
@@ -210,7 +247,11 @@ export default function ProjectCard({
                             href={project.demo}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-foreground/70 hover:text-secondary transition-colors"
+                            className={`flex items-center gap-2 text-sm hover:text-secondary transition-colors ${
+                                isLight
+                                    ? 'text-foreground/85'
+                                    : 'text-foreground/70'
+                            }`}
                         >
 
                             <ExternalLink size={18} />
