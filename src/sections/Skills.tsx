@@ -8,9 +8,9 @@ import {
     SiHtml5,
     SiCss,
     SiPython,
-    SiPhp,
-    SiLaravel,
+    SiNodedotjs,
     SiMysql,
+    SiPostgresql,
     SiGit,
     SiLinux
 } from 'react-icons/si'
@@ -20,6 +20,7 @@ import { FaJava } from 'react-icons/fa'
 import {
     Monitor,
     Server,
+    Database,
     Wrench,
     BookOpen
 } from 'lucide-react'
@@ -43,7 +44,15 @@ const categories = [
         icon: Server,
         technologies: [
             { name: 'Python', icon: SiPython, color: '#3776AB', lightColor: '#3776AB' },
-            { name: 'PHP', icon: SiPhp, color: '#777BB4', lightColor: '#6366A0' }
+            { name: 'Node.js', icon: SiNodedotjs, color: '#83CD29', lightColor: '#43853D' }
+        ]
+    },
+    {
+        title: 'Banco de dados',
+        icon: Database,
+        technologies: [
+            { name: 'MySQL', icon: SiMysql, color: '#4479A1', lightColor: '#28658A' },
+            { name: 'PostgreSQL', icon: SiPostgresql, color: '#6699CC', lightColor: '#336791' }
         ]
     },
     {
@@ -58,9 +67,7 @@ const categories = [
         title: 'Em aprendizado',
         icon: BookOpen,
         technologies: [
-            { name: 'Java', icon: FaJava, color: '#ED8B00', lightColor: '#C76B00' },
-            { name: 'Laravel', icon: SiLaravel, color: '#FF2D20', lightColor: '#DC2626' },
-            { name: 'MySQL', icon: SiMysql, color: '#4479A1', lightColor: '#28658A' }
+            { name: 'Java', icon: FaJava, color: '#ED8B00', lightColor: '#C76B00' }
         ]
     }
 ]
@@ -104,14 +111,16 @@ export default function Skills() {
                             ? 'text-foreground/80'
                             : 'text-foreground/60'
                     }`}>
+
                         Tecnologias que utilizo para transformar ideias
                         em soluções, sempre em constante evolução.
+
                     </p>
 
                 </motion.div>
 
                 {/* Categorias */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 lg:gap-6">
 
                     {categories.map((category, categoryIndex) => (
 
@@ -124,10 +133,14 @@ export default function Skills() {
                                 duration: 0.6,
                                 delay: categoryIndex * 0.1
                             }}
-                            className={`rounded-2xl border backdrop-blur-md p-4 sm:p-8 transition-colors ${
+                            className={`rounded-2xl border backdrop-blur-md p-4 sm:p-6 md:max-lg:p-5 lg:p-8 transition-colors ${
                                 isLight
                                     ? 'border-slate-400/30 bg-surface/90 shadow-[0_8px_25px_rgba(15,23,42,0.07)]'
                                     : 'border-white/10 bg-surface/50'
+                            } ${
+                                categoryIndex === categories.length - 1
+                                    ? 'md:col-span-2'
+                                    : ''
                             }`}
                         >
 
@@ -147,7 +160,11 @@ export default function Skills() {
                             </div>
 
                             {/* Tecnologias */}
-                            <div className="grid grid-cols-2 min-[375px]:grid-cols-3 gap-3 sm:gap-4">
+                            <div className={`grid grid-cols-2 min-[375px]:grid-cols-3 gap-3 sm:gap-4 md:max-lg:gap-2.5 ${
+                                categoryIndex === categories.length - 1
+                                    ? 'lg:grid-cols-6'
+                                    : ''
+                            }`}>
 
                                 {category.technologies.map((technology, index) => (
 
@@ -161,7 +178,7 @@ export default function Skills() {
                                             duration: 0.3,
                                             delay: index * 0.08
                                         }}
-                                        className={`group relative overflow-hidden flex flex-col items-center justify-center gap-2 sm:gap-4 min-h-24 sm:min-h-32 min-w-0 rounded-xl border transition-colors ${
+                                        className={`group relative overflow-hidden flex flex-col items-center justify-center gap-2 sm:gap-4 md:max-lg:gap-2 min-h-24 sm:min-h-32 md:max-lg:min-h-25 min-w-0 rounded-xl border transition-colors ${
                                             isLight
                                                 ? 'border-slate-400/30 bg-background/50 shadow-sm hover:border-secondary/50'
                                                 : 'border-white/10 bg-background/70 hover:border-secondary/40'
@@ -170,7 +187,7 @@ export default function Skills() {
 
                                         {/* Iluminação */}
                                         <div
-                                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                                             style={{
                                                 background: `radial-gradient(circle at center, ${
                                                     isLight
@@ -182,21 +199,24 @@ export default function Skills() {
 
                                         {/* Logotipo */}
                                         <technology.icon
+                                            aria-hidden="true"
                                             color={
                                                 isLight
                                                     ? technology.lightColor
                                                     : technology.color
                                             }
-                                            className="relative w-8 h-8 sm:w-[42px] sm:h-[42px] transition-transform duration-300 group-hover:scale-110"
+                                            className="relative w-8 h-8 sm:w-[42px] sm:h-[42px] md:max-lg:w-8 md:max-lg:h-8 transition-transform duration-300 group-hover:scale-110"
                                         />
 
                                         {/* Nome */}
-                                        <span className={`relative text-xs sm:text-sm font-medium text-center group-hover:text-foreground transition-colors ${
+                                        <span className={`relative text-xs sm:text-sm md:max-lg:text-xs font-medium text-center group-hover:text-foreground transition-colors ${
                                             isLight
                                                 ? 'text-foreground/90'
                                                 : 'text-foreground/80'
                                         }`}>
+
                                             {technology.name}
+
                                         </span>
 
                                     </motion.div>
@@ -223,11 +243,13 @@ export default function Skills() {
                             : 'text-foreground/40'
                     }`}
                 >
+
                     <span className="text-secondary">&gt; </span>
 
                     Always learning, always evolving.
 
                     <span className="text-secondary animate-pulse">_</span>
+
                 </motion.p>
 
             </div>

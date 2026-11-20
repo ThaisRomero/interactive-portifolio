@@ -28,7 +28,7 @@ const contacts = [
         icon: Mail,
         color: '#22D3EE',
         lightColor: '#0E7490',
-        href: 'mailto:SEU_EMAIL'
+        href: 'mailto:thais.assis.romero@gmail.com'
     },
     {
         title: 'Localização',

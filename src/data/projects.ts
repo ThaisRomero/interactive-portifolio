@@ -104,7 +104,7 @@ export const projects: Project[] = [
         ],
 
         image: '/projects/portfolio.png',
-        status: 'development',
+        status: 'completed',
         featured: false,
 
         github: 'https://github.com/ThaisRomero/interactive-portifolio',

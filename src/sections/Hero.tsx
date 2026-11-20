@@ -38,7 +38,7 @@ export default function Hero() {
                     initial={{ opacity: 0, x: -40 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8 }}
-                    className="min-w-0"
+                    className="min-w-0 md:max-lg:text-center"
                 >
 
                     {/* Status */}
@@ -57,7 +57,7 @@ export default function Hero() {
                         Olá, eu sou
                     </p>
 
-                    <h1 className="text-[clamp(2.4rem,12.5vw,3rem)] sm:text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight bg-linear-to-r from-secondary via-blue-400 to-primary bg-clip-text text-transparent">
+                    <h1 className="text-[clamp(2.4rem,12.5vw,3rem)] sm:text-5xl md:text-6xl xl:text-7xl font-bold tracking-tight bg-linear-to-r from-secondary via-blue-400 to-primary bg-clip-text text-transparent md:max-lg:w-fit md:max-lg:mx-auto">
                         Thaís Romero
                     </h1>
 
@@ -77,7 +77,7 @@ export default function Hero() {
                     </div>
 
                     {/* Descrição */}
-                    <p className={`text-base md:text-lg leading-relaxed max-w-xl ${
+                    <p className={`text-base md:text-lg leading-relaxed max-w-xl md:max-lg:mx-auto ${
                         isLight
                             ? 'text-foreground/80'
                             : 'text-foreground/60'
@@ -90,7 +90,7 @@ export default function Hero() {
                     </p>
 
                     {/* Botões */}
-                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 mt-6 sm:mt-8 md:max-lg:justify-center">
 
                         <motion.a
                             href="#projects"
@@ -133,7 +133,7 @@ export default function Hero() {
                     initial={{ opacity: 0, x: 40 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
-                    className="min-w-0"
+                    className="min-w-0 w-full md:max-lg:max-w-150 md:max-lg:mx-auto"
                 >
 
                     <InteractiveTerminal />

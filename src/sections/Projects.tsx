@@ -100,7 +100,7 @@ export default function Projects() {
                 </motion.div>
 
                 {/* Grid de projetos */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-7 md:max-lg:gap-5">
 
                     {projects.map(project => (
 

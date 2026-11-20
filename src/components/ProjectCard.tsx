@@ -74,13 +74,13 @@ export default function ProjectCard({
             transition={{ duration: 0.5 }}
             className={`
                 group relative overflow-hidden rounded-2xl
-                border backdrop-blur-md
+                border backdrop-blur-md min-w-0
                 transition-colors hover:border-secondary/50
                 ${isLight
                     ? 'bg-surface/95 shadow-[0_8px_25px_rgba(15,23,42,0.08)]'
                     : 'bg-surface/60'}
                 ${project.featured
-                    ? 'border-primary/40 lg:col-span-2 lg:grid lg:grid-cols-2'
+                    ? 'border-primary/40 md:col-span-2 lg:grid lg:grid-cols-2'
                     : isLight
                         ? 'border-border/20 flex flex-col'
                         : 'border-white/10 flex flex-col'}
@@ -88,7 +88,11 @@ export default function ProjectCard({
         >
 
             {/* Imagem do projeto */}
-            <div className="relative overflow-hidden min-h-48 sm:min-h-56 lg:min-h-64 bg-[#090B14]">
+            <div className={`relative overflow-hidden bg-[#090B14] ${
+                project.featured
+                    ? 'min-h-48 sm:min-h-56 md:min-h-72 lg:min-h-64'
+                    : 'min-h-48 sm:min-h-56 md:min-h-48 lg:min-h-64'
+            }`}>
 
                 {!imageError ? (
 
@@ -144,7 +148,7 @@ export default function ProjectCard({
             </div>
 
             {/* Informações */}
-            <div className="flex flex-col flex-1 p-5 sm:p-6 lg:p-8">
+            <div className="flex flex-col flex-1 min-w-0 p-5 sm:p-6 md:p-5 lg:p-8">
 
                 {/* Status */}
                 <div className={`
@@ -156,7 +160,7 @@ export default function ProjectCard({
                 `}>
 
                     <span className={`
-                        w-2 h-2 rounded-full
+                        w-2 h-2 shrink-0 rounded-full
                         ${isLight ? status.lightDot : status.dot}
                     `} />
 
@@ -165,7 +169,11 @@ export default function ProjectCard({
                 </div>
 
                 {/* Título */}
-                <h3 className="text-xl sm:text-2xl font-bold mb-2 group-hover:text-secondary transition-colors">
+                <h3 className={`font-bold mb-2 group-hover:text-secondary transition-colors ${
+                    project.featured
+                        ? 'text-xl sm:text-2xl md:text-3xl'
+                        : 'text-xl lg:text-2xl'
+                }`}>
 
                     {project.title}
 
@@ -177,7 +185,7 @@ export default function ProjectCard({
 
                 </p>
 
-                <p className={`text-sm sm:text-base leading-relaxed mb-5 sm:mb-6 ${
+                <p className={`text-sm lg:text-base leading-relaxed mb-5 sm:mb-6 ${
                     isLight
                         ? 'text-foreground/80'
                         : 'text-foreground/60'
@@ -194,7 +202,7 @@ export default function ProjectCard({
 
                         <span
                             key={technology}
-                            className="rounded-md border border-primary/20 bg-primary/10 text-primary text-xs px-2.5 sm:px-3 py-1.5"
+                            className="rounded-md border border-primary/20 bg-primary/10 text-primary text-xs px-2.5 lg:px-3 py-1.5"
                         >
 
                             {technology}
@@ -206,7 +214,7 @@ export default function ProjectCard({
                 </div>
 
                 {/* Ações */}
-                <div className="flex flex-wrap items-center gap-4 sm:gap-5 mt-auto">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-3 lg:gap-5 mt-auto">
 
                     <button
                         type="button"

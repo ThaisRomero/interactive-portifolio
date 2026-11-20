@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react'
 import type { FormEvent, KeyboardEvent } from 'react'
 import { Terminal } from 'lucide-react'
@@ -6,6 +7,8 @@ interface TerminalEntry {
     command: string
     output: string
 }
+
+const CONTACT_EMAIL = 'thais.assis.romero@gmail.com'
 
 const commands: Record<string, string> = {
     help: [
@@ -38,10 +41,11 @@ const commands: Record<string, string> = {
     ].join('\n'),
 
     skills: [
-        'Front-end: React, JavaScript, TypeScript, HTML, CSS',
-        'Back-end: Python, PHP',
-        'Em estudo: Java, Laravel, MySQL',
+        'Front-end: React, JavaScript, TypeScript, HTML5, CSS3',
+        'Back-end: Python, Node.js',
+        'Banco de dados: MySQL, PostgreSQL',
         'Ferramentas: Git, Linux',
+        'Em aprendizado: Java',
         '',
         'Navegando para Habilidades...'
     ].join('\n'),
@@ -49,12 +53,13 @@ const commands: Record<string, string> = {
     projects: [
         '01. PONLab - Gestão e Monitoramento de Capacidade PON',
         '02. Restaurante Encanto Gastronomia (em finalização)',
-        '03. Portfólio Interativo',
+        '03. Portfólio Interativo (concluído)',
         '',
         'Navegando para Projetos...'
     ].join('\n'),
 
     contact: [
+        `E-mail: ${CONTACT_EMAIL}`,
         'LinkedIn: linkedin.com/in/thais-romero',
         'GitHub: github.com/ThaisRomero',
         '',
